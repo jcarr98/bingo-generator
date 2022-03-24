@@ -31,7 +31,7 @@ export default function Dashboard(props) {
       if(response.status === 401) {
         navigate('/login?tokenExpired=true');
       }
-      
+
       setUserName(response.data.display_name);
     }).catch((error) => {
       console.log('error');
@@ -39,7 +39,7 @@ export default function Dashboard(props) {
     }).finally(() => {
       setLoading(false);
     });
-  }, [props.noExpiry, props.token]);
+  }, [props.noExpiry, props.token, navigate]);
 
   function logout() {
     window.localStorage.removeItem("token");
