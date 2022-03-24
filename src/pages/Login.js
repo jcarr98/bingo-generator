@@ -11,12 +11,12 @@ export default function Login(props) {
   const RESPONSE_TYPE = 'token';
 
   // States
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [tokenExpired, setTokenExpired] = useState(false);
 
   useEffect(() => {
-    setTokenExpired(searchParams.get('tokenExpired') == 'true');
-  }, []);
+    setTokenExpired(searchParams.get('tokenExpired') === 'true');
+  }, [searchParams]);
 
   return (
     <Box full align="center" pad="medium">
