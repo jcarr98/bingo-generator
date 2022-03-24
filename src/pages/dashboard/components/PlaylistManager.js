@@ -37,6 +37,11 @@ export default function PlaylistManager(props) {
       });
       for(let i = 0; i < response.data.items.length; i++) {
         let current = response.data.items[i];
+        // Check playlist has at least one track
+        if(current.tracks.total < 1) {
+          continue;
+        }
+
         // Get playlist id and name
         let playlist = {
           id: current.id,
