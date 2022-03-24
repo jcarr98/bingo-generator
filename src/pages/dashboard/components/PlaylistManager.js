@@ -5,12 +5,14 @@ import { Box, Button, List, Text } from 'grommet';
 
 import Loading from '../../../components/Loading';
 import Track from './Track';
+import { useNavigate } from 'react-router-dom';
 
 export default function PlaylistManager(props) {
   const [playlistsLoading, setPlaylistsLoading] = useState(true);
   const [playlistInfoLoading, setPlaylistInfoLoading] = useState(false);
   const [playlists, setPlaylists] = useState([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState({id: -1, name: 'No playlist selected', tracks: []});
+  const navigate = useNavigate();
   
 
   useEffect(() => {
@@ -20,6 +22,11 @@ export default function PlaylistManager(props) {
 
     // Load playlists
     Axios.get(`${process.env.REACT_APP_SPOTIFY_API}/me/playlists`, {headers: headers}).then(response => {
+      // Check auth token isn't expired
+      if(response.status === 401) {
+        navigate('/login?tokenExpired=true');
+      }
+
       let tPlaylists = [];
       tPlaylists.push({
         id: -1,
@@ -44,7 +51,7 @@ export default function PlaylistManager(props) {
       setPlaylists(tPlaylists);
       setPlaylistsLoading(false);
     });
-  }, [props.token]);
+  }, [props.token, navigate]);
 
   function loadPlaylist(playlist) {
     // If user selects list title
@@ -60,6 +67,11 @@ export default function PlaylistManager(props) {
 
     // Load songs
     Axios.get(`${process.env.REACT_APP_SPOTIFY_API}/playlists/${playlist.id}/tracks`, {headers: headers}).then(response => {
+      // Check auth token isn't expired
+      if(response.status === 401) {
+        navigate('/login?tokenExpired=true');
+      }
+
       let tTracks = [];  // Keep list of all tracks in playlist
       for(let i = 0; i < response.data.items.length; i++) {
         // Get current track
