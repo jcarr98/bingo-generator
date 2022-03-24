@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Box, Paragraph } from 'grommet';
+import { Box } from 'grommet';
 import { useNavigate } from 'react-router-dom';
 
 import Loading from '../components/Loading';
