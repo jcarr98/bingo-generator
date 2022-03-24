@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardBody, CardFooter, Image, Text } from 'grommet';
+import { Box, Card, CardBody, CardFooter, Image, Text } from 'grommet';
 
 import Player from './Player';
 

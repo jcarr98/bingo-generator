@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Anchor, Box, Button, Card, CardBody, CardHeader, CardFooter, Notification, Text } from 'grommet';
+import { Box, Button, Card, CardBody, CardHeader, CardFooter, Notification, Text } from 'grommet';
 import Axios from 'axios';
 
 import Loading from '../../components/Loading';
@@ -34,7 +34,7 @@ export default function Dashboard(props) {
     }).finally(() => {
       setLoading(false);
     });
-  }, []);
+  }, [props.noExpiry, props.token]);
 
   function logout() {
     window.localStorage.removeItem("token");
