@@ -6,7 +6,7 @@ import { useSearchParams } from 'react-router-dom';
 export default function Login(props) {
   // API information
   const CLIENT_ID = process.env.REACT_APP_CLIENT_ID;
-  const REDIRECT_URI = 'http://localhost:3000';
+  const REDIRECT_URI = REACT_APP_REDIRECT_URI;
   const AUTH_ENDPOINT = 'https://accounts.spotify.com/authorize';
   const RESPONSE_TYPE = 'token';
 
