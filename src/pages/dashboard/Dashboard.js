@@ -27,6 +27,11 @@ export default function Dashboard(props) {
 
     // Load profile
     Axios.get(`${process.env.REACT_APP_SPOTIFY_API}/me`, {headers: headers}).then((response) => {
+      // Check auth token isn't expired
+      if(response.status === 401) {
+        navigate('/login?tokenExpired=true');
+      }
+      
       setUserName(response.data.display_name);
     }).catch((error) => {
       console.log('error');
