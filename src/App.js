@@ -6,6 +6,7 @@ import AppBar from './components/AppBar';
 import Login from './pages/Login';
 import Oops from './pages/Oops';
 import Landing from './pages/Landing';
+import Generator from './pages/generator/Generator';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Landing />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/generate' element={<Generator />} />
           <Route path='*' element={<Oops />} />
         </Routes>
       </Router>
