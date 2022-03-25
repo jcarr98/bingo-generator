@@ -1,26 +1,58 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Box, Button, Layer, Text, TextInput } from 'grommet';
 
+import Generator from '../../generator/Generator';
+
 export default function BingoSetup(props) {
   const [title, setTitle] = useState(props.playlist.name);
-  const [numSheets, setNumSheets] = useState(0);
-  const [badNumSheets, setBadNumSheets] = useState(false);
+  const [maxUnique, setMaxUnique] = useState(factorial(props.playlist.numSongs));
+  const [numSheets, setNumSheets] = useState(1);
+  const [badNumSheets, setBadNumSheets] = useState({status: false, message: ''});
+  const navigate = useNavigate();
 
   function checkNum(num) {
     let n = parseInt(num);
     // Entry is deleted
     if(num === '') {
-      setNumSheets(0);
-      setBadNumSheets(false);
+      setNumSheets(1);
+      setBadNumSheets({status: false});
+    }
+    else if (num < 1) {
+      setBadNumSheets({status: true, message: 'You must make at least one sheet'});
     }
     else if(isNaN(n)) {
-      setBadNumSheets(true);
-    } 
+      setBadNumSheets({status: true, message: 'Please only enter numbers'});
+    }
+    else if(num > maxUnique) {
+      setBadNumSheets({status: true, message: `Please enter less than ${maxUnique}`});
+    }
     else {
       setNumSheets(n);
-      setBadNumSheets(false);
+      setBadNumSheets({status: false});
     }
+  }
+
+  function factorial(n) {
+    return factorialHelper(n);
+  }
+
+  function factorialHelper(n) {
+    if(n === 0) {
+      return 1;
+    } else {
+      return n * factorialHelper(n-1);
+    }
+  }
+
+  function create() {
+    navigate('/generate', {
+      state: {
+        tracks: props.playlist.trackNames,
+        numberSheets: numSheets
+      }
+    });
   }
 
   return (
@@ -32,13 +64,13 @@ export default function BingoSetup(props) {
           <Box>
             <Text>Total songs: {props.playlist.numSongs}</Text>
           </Box>
-          <Box>
-            <p>You can make xx number of unique combinations</p>
+          <Box fill align='center'>
+            <p>You can make <b>{maxUnique}</b> unique bingo boards with this many songs</p>
           </Box>
         </Box>
 
         {/* Form */}
-        <Box pad='small'>
+        <Box pad={{bottom: 'large', horizontal: 'small'}}>
           {/* Title */}
           <Box>
             <Text>Sheet Title:</Text>
@@ -55,16 +87,19 @@ export default function BingoSetup(props) {
               value={numSheets}
               onChange={event => checkNum(event.target.value)}
             />
-            {badNumSheets && (
-              <Text color='red'>Please only enter numbers</Text>
+            {badNumSheets.status && (
+              <Text color='red'>{badNumSheets.message}</Text>
             )}
           </Box>
         </Box>
 
+        {/* Result */}
+        {/* <Generator tracks={props.playlist.trackNames} numSheets={numSheets} /> */}
+
         {/* Footer buttons */}
         <Box direction='row'>
           <Box pad='xsmall'>
-            <Button primary color='main' label={<Text color='mainText'>Generate sheets</Text>} onClick={() => alert('Not implemented yet')} />
+            <Button primary color='main' label={<Text color='mainText'>Generate sheets</Text>} onClick={() => create()} />
           </Box>
           <Box pad='xsmall'>
             <Button secondary color='main' label={<Text color='mainText'>Close</Text>} onClick={() => {props.setShow()}} />

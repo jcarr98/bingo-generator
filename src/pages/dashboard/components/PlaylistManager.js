@@ -38,7 +38,7 @@ export default function PlaylistManager(props) {
       for(let i = 0; i < response.data.items.length; i++) {
         let current = response.data.items[i];
         // Check playlist has at least one track
-        if(current.tracks.total < 1) {
+        if(current.tracks.total < 25) {
           continue;
         }
 
@@ -78,6 +78,7 @@ export default function PlaylistManager(props) {
       }
 
       let tTracks = [];  // Keep list of all tracks in playlist
+      let tTrackNames = [] // Separate list containing just track names
       for(let i = 0; i < response.data.items.length; i++) {
         // Get current track
         let track = response.data.items[i].track;
@@ -96,6 +97,7 @@ export default function PlaylistManager(props) {
         }
         // Save all info about current track
         tTracks.push(item);
+        tTrackNames.push(item.name);
       }
 
       let info = {
@@ -104,6 +106,7 @@ export default function PlaylistManager(props) {
         description: playlist.description,
         numSongs: tTracks.length,
         tracks: tTracks,
+        trackNames: tTrackNames
       }
 
       setSelectedPlaylist(info);
