@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Box, Button, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet';
+import { Anchor, Box, Button, Layer, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet';
 import Loading from '../../components/Loading';
+
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { FormPreviousLink } from 'grommet-icons';
 
 export default function Generator() {
   const location = useLocation();
   const [matrices, setMatrices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingPDF, setLoadingPDF] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Create tables
@@ -129,31 +135,93 @@ export default function Generator() {
     )
   }
 
+  function createPDF() {
+    let before = Date.now();
+    setLoadingPDF(true);
+
+    const pdf = new jsPDF();
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+
+    for(let i = 0; i < location.state.numberSheets; i++) {
+      pdf.text(location.state.title, pageWidth/2, 50, 'center');
+      autoTable(pdf, {
+        startY: 60,
+        headStyles: {
+          lineWidth: 0,
+          minCellHeight: 5,
+          textColor: 'black',
+          fontSize: 15
+        },
+        styles: {
+          cellWidth: pageWidth/5-5,
+          minCellHeight: pageWidth/5-5,
+          halign: 'center',
+          valign: 'middle',
+          overflow: 'linebreak',
+          fillColor: false,
+          lineWidth: 0.5
+        },
+        alternateRowStyles: {
+          fillColor: false
+        },
+        head: [['B', 'I', 'N', 'G', 'O']],
+        body: matrices[i]
+      });
+      
+      if(i < location.state.numberSheets-1) {
+        pdf.addPage();
+      }
+    }
+
+    pdf.save('bingosheets.pdf');
+    setLoadingPDF(false);
+    let after = Date.now();
+    console.log(`Time: ${(after-before)/1000} seconds`);
+    navigate('/');
+  }
+
   return (
     <Box full align='center'>
       {loading ? (
         <Loading text='Loading matrices. This could take a while...' />
       ) : (
         <Box fill align='center'>
-          <h1>Bingo Sheets Generated</h1>
-          <Box width='small' align='center'>
-            <Button primary color='main' label={<Text color='mainText'>Download PDF</Text>} onClick={() => alert('Not implemented')} />
+          <h1>Bingo Sheets Download Center</h1>
+          <Box align='center' direction='row'>
+            <Box pad='small'>
+              <Button primary color='main' label={<Text color='mainText'>Download PDF</Text>} onClick={() => createPDF()} />
+            </Box>
+            <Box pad='small'>
+              <Button secondary color='main' label='Cancel' onClick={() => navigate('/')} />
+            </Box>
           </Box>
           <Box>
             <h2>Sheets Preview:</h2>
-            <ul style={{listStyleType: 'none'}}>
+            <Box background='light-2' pad='small' align='center'>
               {matrices.map((item, index) => {
-                return (
-                  <li key={index}>
-                    {createTable(item)}
-                  </li>
-                );
-              })}
-            </ul>
+                  return (
+                    <Box id={`${index}`} key={index} align='center' style={{marginBottom: '10em'}}>
+                      <Box pad='large'>
+                        <h1 color='black'>{location.state.title}</h1>
+                      </Box>
+                      <Box pad='medium'>
+                        {createTable(item)}
+                      </Box>
+                    </Box>
+                  );
+                })}
+            </Box>
           </Box>
         </Box>
       )
       }
+
+      {loadingPDF && (
+        <Layer>
+          <Loading text='Creating PDF. This could take a while...' />
+        </Layer>
+      )}
     </Box>
   )
 }
