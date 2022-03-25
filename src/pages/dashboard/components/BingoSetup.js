@@ -3,11 +3,9 @@ import { useNavigate } from 'react-router-dom';
 
 import { Box, Button, Layer, Text, TextInput } from 'grommet';
 
-import Generator from '../../generator/Generator';
-
 export default function BingoSetup(props) {
   const [title, setTitle] = useState(props.playlist.name);
-  const [maxUnique, setMaxUnique] = useState(factorial(props.playlist.numSongs));
+  const [maxUnique] = useState(factorial(props.playlist.numSongs));
   const [numSheets, setNumSheets] = useState(1);
   const [badNumSheets, setBadNumSheets] = useState({status: false, message: ''});
   const navigate = useNavigate();
@@ -93,8 +91,10 @@ export default function BingoSetup(props) {
           </Box>
         </Box>
 
-        {/* Result */}
-        {/* <Generator tracks={props.playlist.trackNames} numSheets={numSheets} /> */}
+        {/* Disclaimer */}
+        <Box>
+          <Text>Note: All sheet creation takes place in your browser, so it may take a bit to generate all the sheets</Text>
+        </Box>
 
         {/* Footer buttons */}
         <Box direction='row'>
