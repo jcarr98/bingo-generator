@@ -14,22 +14,25 @@ export default function BingoSetup(props) {
     let n = parseInt(num);
     // Entry is deleted
     if(num === '') {
-      setNumSheets(1);
+      setNumSheets('');
       setBadNumSheets({status: false});
-    }
-    else if (num < 1) {
-      setBadNumSheets({status: true, message: 'You must make at least one sheet'});
     }
     else if(isNaN(n)) {
       setBadNumSheets({status: true, message: 'Please only enter numbers'});
     }
-    else if(num > maxUnique) {
+    else if (n < 1) {
+      setBadNumSheets({status: true, message: 'You must make at least one sheet'});
+    }
+    else if(n > maxUnique) {
       setBadNumSheets({status: true, message: `Please enter less than ${maxUnique}`});
     }
     else {
       setNumSheets(n);
       setBadNumSheets({status: false});
+      return true;
     }
+
+    return false;
   }
 
   function factorial(n) {
@@ -45,8 +48,13 @@ export default function BingoSetup(props) {
   }
 
   function create() {
+    if(!checkNum(numSheets)) {
+      return;
+    }
+
     navigate('/generate', {
       state: {
+        title: title,
         tracks: props.playlist.trackNames,
         numberSheets: numSheets
       }

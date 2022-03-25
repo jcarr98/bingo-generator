@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, Card, CardBody, CardHeader, CardFooter, Notification, Text } from 'grommet';
+import { Anchor, Box, Button, Card, CardBody, CardHeader, CardFooter, Notification, Text } from 'grommet';
 import Axios from 'axios';
 
 import Loading from '../../components/Loading';
@@ -10,6 +10,7 @@ import BingoSetup from './components/BingoSetup';
 
 export default function Dashboard(props) {
   const [noExpiry, setNoExpiry] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("");
   const [audioError, setAudioError] = useState(false);
@@ -84,12 +85,38 @@ export default function Dashboard(props) {
             </Box>
           </Box> */}
 
-          <PlaylistManager 
-            token={props.token} 
-            setShowBingoSetup={setShowSetup} 
-            setSelectedPlaylist={setSelectedPlaylist}
-            setAudioError={setAudioError} 
-          />
+          <Box fill>
+            <Box pad='small' align='center'>
+              <Anchor 
+                color='main' 
+                label="Why aren't some of my playlists showing up?" 
+                onClick={() => setShowHelp(!showHelp)} 
+                style={{textDecoration: 'underline'}} 
+              />
+              {showHelp && (
+                <Box fill align='center'>
+                  <p>
+                    There are a couple of rules for the app to load your playlist
+                    <ol>
+                      <li>The playlist must have at least 25 songs. This is how many spaces are on a standard bingo sheet.</li>
+                      <li>The playlist must be public. Access private playlists hasn't been implemented in this app yet.</li>
+                      <li>As of right now, the app can only load the first 100 songs on a playlist. That will be fixed eventually</li>
+                    </ol>
+                  </p>
+
+                  <Box width='small' align='center'>
+                    <Button secondary color='main' label='Close help' onClick={() => setShowHelp(false)} />
+                  </Box>
+                </Box>
+              )}
+            </Box>
+            <PlaylistManager 
+              token={props.token} 
+              setShowBingoSetup={setShowSetup} 
+              setSelectedPlaylist={setSelectedPlaylist}
+              setAudioError={setAudioError} 
+            />
+          </Box>
         </Box>
       )}
 
@@ -100,6 +127,9 @@ export default function Dashboard(props) {
           playlist={selectedPlaylist}
         />
       )}
+
+      {/* Show help */}
+
 
       {/* Notifications */}
       {noExpiry && 

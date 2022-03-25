@@ -8,6 +8,7 @@ import Track from './Track';
 import { useNavigate } from 'react-router-dom';
 
 export default function PlaylistManager(props) {
+  const [token, setToken] = useState();
   const [playlistsLoading, setPlaylistsLoading] = useState(true);
   const [playlistInfoLoading, setPlaylistInfoLoading] = useState(false);
   const [playlists, setPlaylists] = useState([]);
@@ -16,8 +17,16 @@ export default function PlaylistManager(props) {
   
 
   useEffect(() => {
+    // Get token
+    const getToken = localStorage.getItem('token');
+    if(!getToken) {
+      navigate('/login');
+    } else {
+      setToken(getToken);
+    }
+
     const headers = {
-      'Authorization' : `Bearer ${props.token}`
+      'Authorization' : `Bearer ${getToken}`
     }
 
     // Load playlists
@@ -56,7 +65,7 @@ export default function PlaylistManager(props) {
       setPlaylists(tPlaylists);
       setPlaylistsLoading(false);
     });
-  }, [props.token, navigate]);
+  }, [navigate]);
 
   function loadPlaylist(playlist) {
     // If user selects list title
@@ -67,7 +76,7 @@ export default function PlaylistManager(props) {
 
     setPlaylistInfoLoading(true);
     const headers = {
-      'Authorization' : `Bearer ${props.token}`
+      'Authorization' : `Bearer ${token}`
     }
 
     // Load songs
@@ -145,33 +154,36 @@ export default function PlaylistManager(props) {
         {playlistInfoLoading ? 
           <Loading text='Loading playlist info...' />
         :
-          <Box>
+          selectedPlaylist.id < 0 ? (
+            <h2>No playlist selected</h2>
+            ) : (
             <Box>
-              <h2>{selectedPlaylist.id < 0 ? 'No playlist selected' : selectedPlaylist.name}</h2>
-              <Text>{selectedPlaylist.description ? selectedPlaylist.description : null}</Text>
-              <Box pad={{vertical: 'small'}} width='small'>
-                <Button primary color='main' label={<Text color='mainText'>Create Bingo Sheet</Text>} size='small' onClick={() => {props.setShowBingoSetup(true)}} />
+              <Box>
+                <h2>{selectedPlaylist.id < 0 ? 'No playlist selected' : selectedPlaylist.name}</h2>
+                <Text>{selectedPlaylist.description ? selectedPlaylist.description : null}</Text>
+                <Box pad={{vertical: 'small'}} width='small'>
+                  <Button primary color='main' label={<Text color='mainText'>Create Bingo Sheet</Text>} size='small' onClick={() => {props.setShowBingoSetup(true)}} />
+                </Box>
+              </Box>
+              <Box>
+                <h3>All songs:</h3>
+                <ul style={{'listStyleType': 'none'}}>
+                  {selectedPlaylist.tracks.map((item) => {
+                    return(
+                      <li key={item.name}>
+                        <Track 
+                          token={token} 
+                          item={item}
+                          setShowBingoSetup={props.setShowBingoSetup}
+                          setAudioError={props.setAudioError} 
+                        />
+                      </li>
+                    );
+                  })}
+                </ul>
               </Box>
             </Box>
-            <Box>
-              <h3>All songs:</h3>
-              <ul style={{'listStyleType': 'none'}}>
-                {selectedPlaylist.tracks.map((item, index) => {
-                  return(
-                    <li key={item.name}>
-                      <Track 
-                        token={props.token} 
-                        item={item}
-                        setShowBingoSetup={props.setShowBingoSetup}
-                        setAudioError={props.setAudioError} 
-                      />
-                    </li>
-                  );
-                })}
-              </ul>
-            </Box>
-          </Box>
-        }
+          )}
         
       </Box>
     </Box>
