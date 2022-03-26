@@ -30,7 +30,8 @@ function AppBar() {
         }}
         items={[
           { label: "Main Website", onClick: () => { window.location.href = "https://www.jeffreycarr.dev" } },
-          { label: "Recipe Book", onClick: () => { window.location.href = 'https://www.recipe.jeffreycarr.dev' } }
+          { label: "Recipe Book", onClick: () => { window.location.href = 'https://www.recipe.jeffreycarr.dev' } },
+          {label: "Bingo Creator (beta)", onClick: () => {window.location.href = 'https://www.bingo.jeffreycarr.dev/'}}
         ]}
       >
         <Box direction="column" align="center">
