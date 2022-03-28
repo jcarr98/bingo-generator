@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, Layer, Text, TextInput } from 'grommet';
+import { Box, Button, FileInput, Image, Layer, Text, TextInput } from 'grommet';
 
 export default function BingoSetup(props) {
   const [title, setTitle] = useState(props.playlist.name);
   const [maxUnique] = useState(factorial(props.playlist.numSongs));
   const [numSheets, setNumSheets] = useState(1);
   const [badNumSheets, setBadNumSheets] = useState({status: false, message: ''});
+  const [fsLogo, setFSLogo] = useState(null);
+  const [companyName, setCompanyName] = useState('');
+  const [companyLogo, setCompanyLogo] = useState(null);
   const navigate = useNavigate();
 
   function checkNum(num) {
@@ -47,6 +50,25 @@ export default function BingoSetup(props) {
     }
   }
 
+  function uploadImage(uploaded, type) {
+    function checkImage(img) {
+      if(!img) {
+        return false;
+      }
+
+      return img.type.split('/')[0] !== 'image' ? false : true;
+    }
+
+    let image = uploaded[0];
+    if(!checkImage(image)) {
+      alert('Please only upload an image');
+      image = null;
+      type === 'freespace' ? setFSLogo(null) : setCompanyLogo(null);
+    } else {
+      type === 'freespace' ? setFSLogo(URL.createObjectURL(image)) : setCompanyLogo(URL.createObjectURL(image));
+    }
+  }
+
   function create() {
     if(!checkNum(numSheets)) {
       return;
@@ -56,17 +78,20 @@ export default function BingoSetup(props) {
       state: {
         title: title,
         tracks: props.playlist.trackNames,
-        numberSheets: numSheets
+        numberSheets: numSheets,
+        companyName: companyName,
+        companyLogo: companyLogo,
+        fsLogo: fsLogo
       }
     });
   }
 
   return (
-    <Layer background='secondary'>
-      <Box pad='medium' align='center' fill='vertical' overflow='auto'>
+    <Layer background='secondary' responsive>
+      <Box pad='medium' align='center' fill='vertical' overflow='auto' responsive>
         <h1>Bingo Sheet Setup</h1>
         <h2>{props.playlist.name}</h2>
-        <Box pad='small'>
+        <Box pad='small' responsive>
           <Box>
             <Text>Total songs: {props.playlist.numSongs}</Text>
           </Box>
@@ -76,7 +101,7 @@ export default function BingoSetup(props) {
         </Box>
 
         {/* Form */}
-        <Box pad={{bottom: 'large', horizontal: 'small'}}>
+        <Box pad={{bottom: 'large', horizontal: 'small'}} responsive>
           {/* Title */}
           <Box>
             <Text>Sheet Title:</Text>
@@ -95,6 +120,43 @@ export default function BingoSetup(props) {
             />
             {badNumSheets.status && (
               <Text color='red'>{badNumSheets.message}</Text>
+            )}
+          </Box>
+          {/* Logo uploader */}
+          <Box>
+            {/* Company name */}
+            <Box>
+              <Text>Company name (optional):</Text>
+              <TextInput
+                placeholder='Company name'
+                value={companyName}
+                onChange={event => setCompanyName(event.target.value)}
+              />
+            </Box>
+            {/* Company logo */}
+            <Box>
+              <Text>Upload Company Logo (optional):</Text>
+              <FileInput
+                onChange={(event) => uploadImage(event.target.files, 'company')}
+                multiple={false}
+              />
+            </Box>
+            {companyLogo && (
+              <Box basis='small' pad={{top: 'large'}}>
+                <Image src={companyLogo} fit='contain' />
+              </Box>
+            )}
+            <Box>
+              <Text>Upload logo (optional)</Text>
+              <FileInput
+                onChange={event => uploadImage(event.target.files, 'freespace')}
+                multiple={false}
+              />
+            </Box>
+            {fsLogo && (
+              <Box basis='small' pad={{top: 'large'}}>
+                <Image src={fsLogo} fit='contain' />
+              </Box>
             )}
           </Box>
         </Box>

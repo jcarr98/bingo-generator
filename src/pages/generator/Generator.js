@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Anchor, Box, Button, Layer, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet';
+import { Box, Button, Image, Layer, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet';
 import Loading from '../../components/Loading';
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { FormPreviousLink } from 'grommet-icons';
 
 export default function Generator() {
   const location = useLocation();
@@ -80,7 +79,7 @@ export default function Generator() {
 
       // In third row we need 'Free Space'
       middleRow = iArray.slice(10, 12);
-      middleRow.push('Free Space');
+      middleRow.push('');
       middleRow.push(iArray[13], iArray[14]);
       table.push(middleRow);
 
@@ -111,7 +110,7 @@ export default function Generator() {
               <TableRow>
                 {row.map((item, index2) => {
                   return (
-                    <TableCell 
+                    <TableCell
                       scope='row' 
                       align='center' 
                       border='all' 
@@ -119,8 +118,13 @@ export default function Generator() {
                       height='small'
                       verticalAlign='middle'
                     >
+                      {/* If we're in center space, set freespace image/text; otherwise, set song name */}
                       {index === 2 && index2 === 2 ? (
-                        <b>{item}</b>
+                        location.state.fsLogo ? (
+                          <Image src={location.state.fsLogo} fit='contain' />
+                        ) : (
+                          <b>Free Space</b>
+                        )
                       ) : (
                         item
                       )}
@@ -143,7 +147,17 @@ export default function Generator() {
 
     const pageWidth = pdf.internal.pageSize.getWidth();
 
+    // For each bingo sheet, create a new page in the pdf
     for(let i = 0; i < location.state.numberSheets; i++) {
+      // If a company logo is provided, add to pdf
+      if(location.state.companyLogo) {
+        pdf.addImage(location.state.companyLogo, 'png', 10, 10, 25, 25);
+      }
+      if(location.state.companyName.length > 0) {
+        pdf.setFontSize(12);
+        location.state.companyLogo ? pdf.text(location.state.companyName, 40, 24) : pdf.text(location.state.companyName, 10, 20);
+      }
+      pdf.setFontSize(28);
       pdf.text(location.state.title, pageWidth/2, 50, 'center');
       autoTable(pdf, {
         startY: 60,
@@ -166,7 +180,24 @@ export default function Generator() {
           fillColor: false
         },
         head: [['B', 'I', 'N', 'G', 'O']],
-        body: matrices[i]
+        body: matrices[i],
+        didDrawCell: function(data) {
+          if(data.column.index === 2 && data.row.index === 2) {
+            let dim = data.cell.height - data.cell.padding('vertical');
+            let textPos = data.cell.getTextPos();
+            let img;
+            // If logo for freespace, set logo. If not, set 'Free Space'
+            if(location.state.fsLogo) {
+              img = location.state.fsLogo;
+              // Add Free Space logo
+              pdf.addImage(img, 'png', textPos.x-17, textPos.y-17, dim, dim);
+            } else {
+              pdf.setFont(undefined, 'bold');
+              pdf.text(textPos.x-9, textPos.y+1, 'Free Space');
+              pdf.setFont(undefined, 'normal');
+            }
+          }
+        }
       });
       
       if(i < location.state.numberSheets-1) {
@@ -201,7 +232,17 @@ export default function Generator() {
             <Box background='light-2' pad='small' align='center'>
               {matrices.map((item, index) => {
                   return (
-                    <Box id={`${index}`} key={index} align='center' style={{marginBottom: '10em'}}>
+                    <Box id={`t${index}`} key={index} align='center' style={{marginBottom: '10em'}}>
+                      <Box alignSelf={'start'} direction='row'>
+                        {location.state.companyLogo && (
+                          <Box basis='xsmall' pad={{left: 'medium', vertical: 'large'}}>
+                            <Image src={location.state.companyLogo} width='80' height='80' />
+                          </Box>
+                        )}
+                        <Box pad='large'>
+                          <h4>{location.state.companyName}</h4>
+                        </Box>
+                      </Box>
                       <Box pad='large'>
                         <h1 color='black'>{location.state.title}</h1>
                       </Box>
