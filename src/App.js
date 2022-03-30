@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { Box } from 'grommet';
@@ -9,6 +10,10 @@ import Landing from './pages/Landing';
 import Generator from './pages/generator/Generator';
 
 function App() {
+  useEffect(() => {
+    document.title = 'Bingo Creator';
+  });
+
   return (
     <Box>
       <AppBar />
