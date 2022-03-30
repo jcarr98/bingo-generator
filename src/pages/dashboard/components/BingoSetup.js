@@ -158,7 +158,7 @@ export default function BingoSetup(props) {
               </Box>
             )}
             <Box>
-              <Text>Upload logo (optional)</Text>
+              <Text>Upload Free Space logo (optional)</Text>
               <FileInput
                 onChange={event => uploadImage(event.target.files, 'freespace')}
                 multiple={false}
