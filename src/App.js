@@ -11,7 +11,7 @@ import Generator from './pages/generator/Generator';
 
 function App() {
   useEffect(() => {
-    document.title = 'Bingo Creator';
+    document.title = 'Bingo Creator - Jeffrey Carr';
   });
 
   return (

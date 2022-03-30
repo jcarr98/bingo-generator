@@ -15,9 +15,6 @@ export default function Login() {
   const [tokenExpired, setTokenExpired] = useState(false);
 
   useEffect(() => {
-    // Set page name
-    document.title = 'Bingo Creator - Login';
-
     // Check for expired token parameter
     setTokenExpired(searchParams.get('tokenExpired') === 'true');
   }, [searchParams]);
