@@ -128,9 +128,6 @@ export default function Dashboard(props) {
         />
       )}
 
-      {/* Show help */}
-
-
       {/* Notifications */}
       {noExpiry && 
         <Notification

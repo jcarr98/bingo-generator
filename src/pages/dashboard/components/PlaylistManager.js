@@ -168,9 +168,9 @@ export default function PlaylistManager(props) {
               <Box>
                 <h3>All songs:</h3>
                 <ul style={{'listStyleType': 'none'}}>
-                  {selectedPlaylist.tracks.map((item) => {
+                  {selectedPlaylist.tracks.map((item, index) => {
                     return(
-                      <li key={item.name}>
+                      <li key={index}>
                         <Track 
                           token={token} 
                           item={item}

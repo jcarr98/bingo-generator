@@ -105,22 +105,23 @@ export default function Generator() {
     return (
       <Table align='center'>
         <TableHeader>
-          <TableRow>
-            <TableCell scope='col' border='bottom' align='center'>B</TableCell>
-            <TableCell scope='col' border='bottom' align='center'>I</TableCell>
-            <TableCell scope='col' border='bottom' align='center'>N</TableCell>
-            <TableCell scope='col' border='bottom' align='center'>G</TableCell>
-            <TableCell scope='col' border='bottom' align='center'>O</TableCell>
+          <TableRow key='header-row'>
+            <TableCell key='B' scope='col' border='bottom' align='center'>B</TableCell>
+            <TableCell key='I' scope='col' border='bottom' align='center'>I</TableCell>
+            <TableCell key='N' scope='col' border='bottom' align='center'>N</TableCell>
+            <TableCell key='G' scope='col' border='bottom' align='center'>G</TableCell>
+            <TableCell key='O' scope='col' border='bottom' align='center'>O</TableCell>
           </TableRow>
         </TableHeader>
         <TableBody>
           {rows.map((row, index) => {
             return (
-              <TableRow>
+              <TableRow key={`row-${index}`}>
                 {row.map((item, index2) => {
                   return (
                     <TableCell
-                      scope='row' 
+                      key={`${index};${index2}`}
+                      scope='row'
                       align='center' 
                       border='all' 
                       size='small' 
