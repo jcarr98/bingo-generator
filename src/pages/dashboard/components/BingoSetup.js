@@ -51,6 +51,7 @@ export default function BingoSetup(props) {
   }
 
   function uploadImage(uploaded, type) {
+    // Confirm file is passed and is an image
     function checkImage(img) {
       if(!img) {
         return false;
@@ -59,11 +60,21 @@ export default function BingoSetup(props) {
       return img.type.split('/')[0] !== 'image' ? false : true;
     }
 
+    // Remove image
+    function removeImage() {
+      type === 'freespace' ? setFSLogo(null) : setCompanyLogo(null);
+    }
+
+    if(!uploaded || uploaded.length < 1) {
+      removeImage();
+      return;
+    }
+
     let image = uploaded[0];
+
     if(!checkImage(image)) {
       alert('Please only upload an image');
-      image = null;
-      type === 'freespace' ? setFSLogo(null) : setCompanyLogo(null);
+      removeImage();
     } else {
       type === 'freespace' ? setFSLogo(URL.createObjectURL(image)) : setCompanyLogo(URL.createObjectURL(image));
     }
@@ -147,7 +158,7 @@ export default function BingoSetup(props) {
               </Box>
             )}
             <Box>
-              <Text>Upload logo (optional)</Text>
+              <Text>Upload Free Space logo (optional)</Text>
               <FileInput
                 onChange={event => uploadImage(event.target.files, 'freespace')}
                 multiple={false}

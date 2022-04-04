@@ -17,15 +17,18 @@ export default function Generator() {
 
   useEffect(() => {
     // Create tables
-    let result = splitResults(generateTables(location.state.tracks, location.state.numberSheets));
+    let result = generateTables(location.state.tracks, location.state.numberSheets);
     setMatrices(result);
     setLoading(false);
   }, [location.state.tracks, location.state.numberSheets]);
 
   /* This is bad, but does the job */
+  // Shuffle array of songs and compare to already shuffled songs.
+  // If the array is unique, save it; if not, skip
   const generateTables = (arr, k) => {
     let results = [];
 
+    // Returns shuffled array
     const shuffle = (array) => {
       let shuffled = array.slice();
       let currentIndex = shuffled.length, randomIndex;
@@ -39,6 +42,7 @@ export default function Generator() {
       return shuffled;
     };
 
+    // Compares array to existing arrays
     const compare = (newArray, allArrays) => {
       let nJson = JSON.stringify(newArray);
 
@@ -54,13 +58,38 @@ export default function Generator() {
       return true;
     };
 
+    const splitArray = (array) => {
+      let table = [];
+      let middleRow = [];
+
+      // Split current table into 5 rows
+      table.push(array.slice(0, 5));
+      table.push(array.slice(5, 10));
+
+      // In third row we need 'Free Space'
+      middleRow = array.slice(10, 12);
+      middleRow.push('');  // Leave free space blank - gets filled in by PDF generator
+      middleRow.push(array[13], array[14]);
+      table.push(middleRow);
+
+      table.push(array.slice(15, 20));
+      table.push(array.slice(20));
+
+      return table;
+    }
+
     let nArr = arr;
     let i = 0;
     let repeats = 0;
     while(i < k && repeats < 50) {
       nArr = shuffle(nArr);
-      if(compare(nArr, results)) {
-        results.push(nArr.slice(0, 25));
+      // Only take first 25 songs
+      let shuffledArr = splitArray(nArr.slice(0, 25));
+      // Check if this table is already saved
+      if(compare(shuffledArr, results)) {
+        // Create table using first 25 songs
+        // let table = splitArray(shuffledArr);
+        results.push(shuffledArr);
         i++;
       } else {
         console.log('Repeat, skipping');
@@ -73,32 +102,6 @@ export default function Generator() {
     }
 
     return results;
-  }
-
-  function splitResults(array) {
-    let result = [];
-    for(let i = 0; i < array.length; i++) {
-      let iArray = array[i];
-      let table = [];
-      let middleRow = [];
-
-      // Split current table into 5 rows
-      table.push(iArray.slice(0, 5));
-      table.push(iArray.slice(5, 10));
-
-      // In third row we need 'Free Space'
-      middleRow = iArray.slice(10, 12);
-      middleRow.push('');
-      middleRow.push(iArray[13], iArray[14]);
-      table.push(middleRow);
-
-      table.push(iArray.slice(15, 20));
-      table.push(iArray.slice(20));
-
-      result.push(table);
-    }
-
-    return result;
   }
 
   function createTable(rows) {
@@ -161,6 +164,7 @@ export default function Generator() {
     for(let i = 0; i < location.state.numberSheets; i++) {
       // If a company logo is provided, add to pdf
       if(location.state.companyLogo) {
+        console.log(location.state.companyLogo);
         pdf.addImage(location.state.companyLogo, 'png', 10, 10, 25, 25);
       }
       if(location.state.companyName.length > 0) {
