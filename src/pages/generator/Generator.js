@@ -179,7 +179,8 @@ export default function Generator() {
           lineWidth: 0,
           minCellHeight: 5,
           textColor: 'black',
-          fontSize: 15
+          fontSize: 15,
+          fontStyle: "bold"
         },
         styles: {
           cellWidth: pageWidth/5-5,
