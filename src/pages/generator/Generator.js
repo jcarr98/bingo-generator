@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { Box, Button, Image, Layer, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet';
+import { Box, Button, Image, Layer, Notification, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet';
 import Loading from '../../components/Loading';
 
 import jsPDF from 'jspdf';
@@ -12,6 +12,7 @@ export default function Generator() {
   const [matrices, setMatrices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingPDF, setLoadingPDF] = useState(false);
+  const [repeatErr, setRepeatErr] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,10 +41,12 @@ export default function Generator() {
 
     const compare = (newArray, allArrays) => {
       let nJson = JSON.stringify(newArray);
-      for(let i = 0; i < allArrays; i++) {
+
+      for(let i = 0; i < allArrays.length; i++) {
         let aJson = JSON.stringify(allArrays[i]);
 
         if(nJson === aJson) {
+          console.log('New board already exists');
           return false;
         }
       }
@@ -53,14 +56,20 @@ export default function Generator() {
 
     let nArr = arr;
     let i = 0;
-    while(i < k) {
+    let repeats = 0;
+    while(i < k && repeats < 50) {
       nArr = shuffle(nArr);
       if(compare(nArr, results)) {
         results.push(nArr.slice(0, 25));
         i++;
       } else {
         console.log('Repeat, skipping');
+        repeats++;
       }
+    }
+
+    if(repeats >= 50) {
+      setRepeatErr(true);
     }
 
     return results;
@@ -262,6 +271,16 @@ export default function Generator() {
         <Layer>
           <Loading text='Creating PDF. This could take a while...' />
         </Layer>
+      )}
+
+      {repeatErr && (
+        <Notification
+          toast
+          status="critical"
+          title="Error Creating Sheets"
+          message={`Generated 50 repeated sheets. This is highly unlikely/unusual. Are you sure you have enough songs? If so, try again. ${matrices.length} sheets were successfully generated.`}
+          onClose={() => setRepeatErr(false)}
+        />
       )}
     </Box>
   )
