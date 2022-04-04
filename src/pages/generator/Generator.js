@@ -172,7 +172,7 @@ export default function Generator() {
         location.state.companyLogo ? pdf.text(location.state.companyName, 40, 24) : pdf.text(location.state.companyName, 10, 20);
       }
       pdf.setFontSize(28);
-      pdf.text(location.state.title, pageWidth/2, 50, 'center');
+      pdf.text(location.state.title, pageWidth/2, 35, 'center');
       autoTable(pdf, {
         startY: 60,
         headStyles: {
