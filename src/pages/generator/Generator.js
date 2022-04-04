@@ -109,11 +109,11 @@ export default function Generator() {
       <Table align='center'>
         <TableHeader>
           <TableRow key='header-row'>
-            <TableCell key='B' scope='col' border='bottom' align='center'>B</TableCell>
-            <TableCell key='I' scope='col' border='bottom' align='center'>I</TableCell>
-            <TableCell key='N' scope='col' border='bottom' align='center'>N</TableCell>
-            <TableCell key='G' scope='col' border='bottom' align='center'>G</TableCell>
-            <TableCell key='O' scope='col' border='bottom' align='center'>O</TableCell>
+            <TableCell key='B' scope='col' border='bottom' align='center'><b>B</b></TableCell>
+            <TableCell key='I' scope='col' border='bottom' align='center'><b>I</b></TableCell>
+            <TableCell key='N' scope='col' border='bottom' align='center'><b>N</b></TableCell>
+            <TableCell key='G' scope='col' border='bottom' align='center'><b>G</b></TableCell>
+            <TableCell key='O' scope='col' border='bottom' align='center'><b>O</b></TableCell>
           </TableRow>
         </TableHeader>
         <TableBody>
