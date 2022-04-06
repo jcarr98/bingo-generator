@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Button, Image, Layer, Notification, Table, TableBody, TableCell, TableHeader, TableRow, Text } from 'grommet';
 import Loading from '../../components/Loading';
 
+import Axios from 'axios';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
@@ -16,6 +17,11 @@ export default function Generator() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Tell backend that a user requested sheets
+    Axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/createdSheets`, {data: {user: location.state.user, numSheets: location.state.numberSheets}}).then((response) => {
+      // do nothing
+    });
+
     // Create tables
     let result = generateTables(location.state.tracks, location.state.numberSheets);
     setMatrices(result);
@@ -153,6 +159,11 @@ export default function Generator() {
   }
 
   function createPDF() {
+    // Tell backend that user is downloading the sheets
+    Axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/downloaded`, {data: {user: location.state.user, numSheets: location.state.numberSheets}}).then((response) => {
+      // do nothing
+    });
+
     let before = Date.now();
     setLoadingPDF(true);
 

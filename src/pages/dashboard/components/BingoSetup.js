@@ -89,6 +89,7 @@ export default function BingoSetup(props) {
       state: {
         title: title,
         tracks: props.playlist.trackNames,
+        user: props.user,
         numberSheets: numSheets,
         companyName: companyName,
         companyLogo: companyLogo,

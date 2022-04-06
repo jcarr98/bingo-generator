@@ -33,7 +33,12 @@ export default function Dashboard(props) {
         navigate('/login?tokenExpired=true');
       }
 
+      // Set user's display name
       setUserName(response.data.display_name);
+
+      // Tell backend a user logged in
+      Axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/visited`, {data: {user: response.data.display_name}});
+
     }).catch((error) => {
       console.log('error');
       console.log(error);
@@ -124,6 +129,7 @@ export default function Dashboard(props) {
       {showSetup && (
         <BingoSetup 
           setShow={setShowSetup}
+          user={userName}
           playlist={selectedPlaylist}
         />
       )}
