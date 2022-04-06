@@ -18,9 +18,7 @@ export default function Generator() {
 
   useEffect(() => {
     // Tell backend that a user requested sheets
-    Axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/createdSheets`, {data: {user: location.state.user, numSheets: location.state.numberSheets}}).then((response) => {
-      // do nothing
-    });
+    Axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/createdSheets`, {data: {user: location.state.user, numSheets: location.state.numberSheets}});
 
     // Create tables
     let result = generateTables(location.state.tracks, location.state.numberSheets);
@@ -160,9 +158,7 @@ export default function Generator() {
 
   function createPDF() {
     // Tell backend that user is downloading the sheets
-    Axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/downloaded`, {data: {user: location.state.user, numSheets: location.state.numberSheets}}).then((response) => {
-      // do nothing
-    });
+    Axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/downloaded`, {data: {user: location.state.user, numSheets: location.state.numberSheets}});
 
     let before = Date.now();
     setLoadingPDF(true);
