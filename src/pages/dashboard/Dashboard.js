@@ -94,7 +94,6 @@ export default function Dashboard(props) {
                     There are a couple of rules for the app to load your playlist
                     <ol>
                       <li>The playlist must have at least 25 songs. This is how many spaces are on a standard bingo sheet.</li>
-                      <li>The playlist must be public. Access private playlists hasn't been implemented in this app yet.</li>
                       <li>As of right now, the app can only load the first 100 songs on a playlist. That will be fixed eventually</li>
                     </ol>
                   </p>
