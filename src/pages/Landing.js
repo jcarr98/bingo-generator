@@ -20,6 +20,13 @@ export default function Landing() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Check if this is user's first time logging in
+    if(!localStorage.getItem('token')) {
+      localStorage.setItem('firstLogin', true);
+    } else {
+      localStorage.setItem('firstLogin', false);
+    }
+
     // Load token information
     const hash = window.location.hash;
     // Get existing token

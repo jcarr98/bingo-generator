@@ -42,7 +42,7 @@ export default function Login() {
       <Button
         primary
         color='main'
-        href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
+        href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&scope=playlist-read-private&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}
         label={<Text color='mainText'>Login with Spotify</Text>}
       />
 
