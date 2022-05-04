@@ -24,7 +24,7 @@ export default function Generator() {
     let result = generateTables(location.state.tracks, location.state.numberSheets);
     setMatrices(result);
     setLoading(false);
-  }, [location.state.tracks, location.state.numberSheets]);
+  }, [location.state.tracks, location.state.numberSheets, location.state.user]);
 
   /* This is bad, but does the job */
   // Shuffle array of songs and compare to already shuffled songs.
@@ -113,11 +113,11 @@ export default function Generator() {
       <Table align='center'>
         <TableHeader>
           <TableRow key='header-row'>
-            <TableCell key='B' scope='col' border='bottom' align='center'><b>B</b></TableCell>
-            <TableCell key='I' scope='col' border='bottom' align='center'><b>I</b></TableCell>
-            <TableCell key='N' scope='col' border='bottom' align='center'><b>N</b></TableCell>
-            <TableCell key='G' scope='col' border='bottom' align='center'><b>G</b></TableCell>
-            <TableCell key='O' scope='col' border='bottom' align='center'><b>O</b></TableCell>
+            <TableCell key='B' scope='col' border='bottom' align='center'><h1>B</h1></TableCell>
+            <TableCell key='I' scope='col' border='bottom' align='center'><h1>I</h1></TableCell>
+            <TableCell key='N' scope='col' border='bottom' align='center'><h1>N</h1></TableCell>
+            <TableCell key='G' scope='col' border='bottom' align='center'><h1>G</h1></TableCell>
+            <TableCell key='O' scope='col' border='bottom' align='center'><h1>O</h1></TableCell>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -178,7 +178,7 @@ export default function Generator() {
         pdf.setFontSize(12);
         location.state.companyLogo ? pdf.text(location.state.companyName, 40, 24) : pdf.text(location.state.companyName, 10, 20);
       }
-      pdf.setFontSize(28);
+      pdf.setFontSize(32);
       pdf.text(location.state.title, pageWidth/2, 35, 'center');
       autoTable(pdf, {
         startY: 60,
@@ -186,7 +186,7 @@ export default function Generator() {
           lineWidth: 0,
           minCellHeight: 5,
           textColor: 'black',
-          fontSize: 15,
+          fontSize: 22,
           fontStyle: "bold"
         },
         styles: {

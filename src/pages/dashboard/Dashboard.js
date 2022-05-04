@@ -9,7 +9,6 @@ import PlaylistManager from './components/PlaylistManager';
 import BingoSetup from './components/BingoSetup';
 
 export default function Dashboard(props) {
-  const [firstLogin, setFirstLogin] = useState(false);
   const [noExpiry, setNoExpiry] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -21,7 +20,6 @@ export default function Dashboard(props) {
 
   useEffect(() => {
     setNoExpiry(props.noExpiry);
-    setFirstLogin(localStorage.getItem('firstLogin'));
 
     // Get user profile info
     const headers = {
@@ -141,16 +139,6 @@ export default function Dashboard(props) {
           title="Error playing song"
           message="The current song could not be played."
           onClose={() => setAudioError(false)}
-        />
-      }
-
-      {firstLogin &&
-        <Notification
-          toast
-          status="normal"
-          title="New features"
-          message="The app now loads private playlists!"
-          onClose={() => setFirstLogin(false)}
         />
       }
     </Box>
