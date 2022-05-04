@@ -171,7 +171,6 @@ export default function Generator() {
     for(let i = 0; i < location.state.numberSheets; i++) {
       // If a company logo is provided, add to pdf
       if(location.state.companyLogo) {
-        console.log(location.state.companyLogo);
         pdf.addImage(location.state.companyLogo, 'png', 10, 10, 25, 25);
       }
       if(location.state.companyName.length > 0) {
@@ -229,8 +228,6 @@ export default function Generator() {
 
     pdf.save('bingosheets.pdf');
     setLoadingPDF(false);
-    let after = Date.now();
-    console.log(`Time: ${(after-before)/1000} seconds`);
     navigate('/');
   }
 

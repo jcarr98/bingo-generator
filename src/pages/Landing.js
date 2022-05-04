@@ -70,21 +70,18 @@ export default function Landing() {
       const currentTime = Date.now();
       // If no token expire stored in localStorage
       if(!tokenExpiry) {
-        console.log("No token expiry found");
         // Set flag for warning
         setNoTokenExpiry(true);
         setUserToken(token);
       }
       // Saved token expiry is older than current time
       else if(currentTime > tokenExpiry) {
-        console.log("Logon token expired");
         setUserToken(null);
         setTokenExpired(true);
         token = null;
       } 
       // Already saved token is valid
       else {
-        console.log("Existing logon token not expired yet");
         setUserToken(token);
       }
     }
